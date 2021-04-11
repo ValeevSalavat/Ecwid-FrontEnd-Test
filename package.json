@@ -1,0 +1,44 @@
+{
+  "name": "ecwid-frontend-test",
+  "version": "1.0.0",
+  "description": "Example of gallery implemetation",
+  "main": "js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production --watch",
+    "dev": "webpack --mode development --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ValeevSalavat/Ecwid-FrontEnd-Test.git"
+  },
+  "keywords": [
+    "gallery",
+    "html",
+    "css",
+    "scss",
+    "js",
+    "vue",
+    "webpack"
+  ],
+  "author": "Valeev Salavat <salik95@mail.ru>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ValeevSalavat/Ecwid-FrontEnd-Test/issues"
+  },
+  "homepage": "https://github.com/ValeevSalavat/Ecwid-FrontEnd-Test#readme",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "css-loader": "^5.2.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "normalize": "^0.3.1",
+    "sass": "^1.32.8",
+    "sass-loader": "^11.0.1",
+    "style-loader": "^2.0.0",
+    "vue-loader": "^15.9.6",
+    "vue-template-compiler": "^2.6.12",
+    "webpack": "^5.31.2",
+    "webpack-cli": "^4.6.0"
+  }
+}
