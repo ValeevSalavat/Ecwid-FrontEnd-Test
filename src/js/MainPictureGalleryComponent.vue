@@ -1,19 +1,20 @@
 <template>
-    <div>
+    <div class="picture-gallary">
         <nav class="nav__settigs">
             <a href="#" class="nav__logo">logo</a>
-            <Settings/>
+            <Settings v-on:filterPictures="filterPictures"/>
         </nav>
-        <p>{{this.objectList}}</p>
-        <PictureList/>
+        <PictureList v-bind:objectList="this.filtredObjectList"
+                     v-bind:widthFilter="this.widthFilter"
+                     v-bind:heightFilter="this.heightFilter"/>
     </div>
 </template>
 
 <script>
 import Settings from './components/Settings.vue'
 import PictureList from './components/PictureList.vue'
-import PictureListItem from './components/PictureListItem.vue'
-const jsonFile = require('./data.json');
+
+//const jsonFile = require('./data.json');
 
 export default {
     props:{
@@ -22,15 +23,17 @@ export default {
     data(){
         return{
             navClassName:'nav',
-            objectList:'',
-            API_URL:'https://gitcdn.link/repo/ValeevSalavat/Ecwid-FrontEnd-Test/main/src/js/data.json?token=AFCG6EKK5NCCSTYQFGUDISDAONGSO'
-        
+            objectList:[],
+            filtredObjectList:[], 
+            widthFilter:0,
+            heightFilter:0,
+            API_PATH: require('./data.json').galleryImages
+            // API_URL:'https://gitcdn.link/repo/ValeevSalavat/Ecwid-FrontEnd-Test/main/src/js/data.json?token=AFCG6EKK5NCCSTYQFGUDISDAONGSO'
         }
     },
     components:{
         Settings,
-        PictureList,
-        PictureListItem
+        PictureList
     },
     methods:{
       makeGetRequest(URL,callback){
@@ -63,23 +66,40 @@ export default {
             resolve(JSON.parse(goods));
             });
         });
-        // fetch(this.API_URL)
-        //     .then(res =>res.json())
-        //     .then(json => {
-        //         // this.objectList=JSON.parse(json);
-        //         console.log(json);
-        //     })
       },
       readJSON(){
-        console.log(this.API_PATH);
-        
-        (items)=>{
-            console.log(items);
+       // console.log(jsonFile);
+        // console.log(this.API_PATH);
+        this.API_PATH.forEach(element => {
+            this.objectList.push(element);
+            this.filtredObjectList.push(element);
+        });
+        console.log(this.objectList);
+      },
+      filterPictures(width,height){
+        console.log(width,height);
+        /*
+        if(width == 0 && height == 0){
+          this.filtredObjectList=this.objectList;
         }
-      }
+        else{
+          this.filtredObjectList.map(item=>{
+            item.width > width &&
+            item.height > height
+          });
+        }*/
+      },
+        filterPicturesWidth(width){
+            // this.$emit('filterPicturesWidth',this.width);
+            console.log(width);
+        },
+        filterPicturesHeight(height){
+            // this.$emit('filterPicturesHeight',this.height);
+        }
     },
     mounted(){
-        this.fetch_URL();
+        // this.fetch_URL();
+        this.readJSON();
     },
     updated(){
     }

@@ -7,8 +7,10 @@
         <input v-if="selectorFlag=='selector-url'" type="text" placeholder="Enter URL:" id="settings__input" v-model="urlPath">
         <input v-else-if="selectorFlag=='selector-pc'" type="text" placeholder="Enter path with pictures on your PC:" id="settings__input" v-model="urlPath">
         <div class="settings__filter">
-            <input type="text" id="setting__filter-w" placeholder="Width filter">
-            <input type="text" id="setting__filter-h" placeholder="Heidth filter">
+            <input type="text" id="setting__filter-w" placeholder="Width filter"
+                   v-on:filterPictures="$emit('filterPicturesWidth',12)">
+            <input type="text" id="setting__filter-h" placeholder="Heidth filter"
+                   v-on:filterPictures="$emit('filterPicturesHeight',23)">
         </div>
     </div>   
 </template>
@@ -26,11 +28,19 @@ export default {
     },
     methods:{
         WriteUrlPath(){
-            this.$emit('WriteUrlPath',urlPath)
+            this.$emit('WriteUrlPath',this.urlPath)
+        },
+        filterPicturesWidth(){
+            this.$emit('filterPicturesWidth',this.width);
+        },
+        filterPicturesHeight(){
+            this.$emit('filterPicturesHeight',this.height);
         }
     },
     updated(){
         // console.log(this.selectorFlag);
+        // console.log(this.);
+        this.filterPictures;
     }
 }
 </script> 
