@@ -9,7 +9,7 @@ export default {
    props:{
      item:{
         type:Object,
-        required:true
+        // required:true 
      },
      widthFilter:{
         type:Number
