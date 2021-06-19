@@ -1,25 +1,27 @@
-body{
-    background-color: aqua;
+body {
+    background: radial-gradient(circle, rgba(9, 9, 121, 1) 12%, rgba(2, 0, 36, 1) 51%, rgba(0, 212, 255, 1) 100%);
 }
 
-.picture-gallary{
-    &__container{
+.picture-gallary {
+    &__container {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
         flex-wrap: wrap;
         // min-width: 320px;    
         max-width: 860px;
-        margin:0 auto;
+        margin: 0 auto;
 
-        border:1px solid  red;
+        border: 1px solid red;
     }
-    &__item{
+
+    &__item {
         max-height: 150px;
         border-radius: 15px;
-        margin:5px
+        margin: 5px
     }
-    &__settings{
+
+    &__settings {
         margin: 0 auto;
     }
 }

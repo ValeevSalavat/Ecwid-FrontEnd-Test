@@ -35,17 +35,24 @@ module.exports = {
           {
             test: /\.vue$/,
             use: ['vue-loader']
-          }//,
-          // {
-          //   test: /\.m?js$/,
-          //   exclude: /(node_modules|bower_components)/,
-          //   use: {
-          //     loader: 'babel-loader',
-          //     options: {
-          //       presets: ['@babel/preset-env']
-          //     }
-          //   }
-          // }
+          },
+          {
+                test:/\.(js|jsx)$/,
+                include: path.resolve(__dirname, "src"),
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                  loader: 'babel-loader',
+                  options: {
+                      presets: ['@babel/preset-env',
+                                '@babel/react',{
+                                'plugins': ['@babel/plugin-proposal-class-properties']}]
+                  }
+                }
+          }
       ]
-  }
+  },
+  resolve: {
+    modules: [`${__dirname}/static_src`, 'node_modules'],
+    extensions: ['.js', '.jsx'],
+} 
 };
