@@ -1,12 +1,12 @@
 <template>
-    <div class="settings">
-        <select name="selector" class="settings__selector" v-model="selectorFlag">
+    <div class="picture-gallary__settings">
+        <select name="selector" class="picture-gallary__settings-selector" v-model="selectorFlag">
            <option value="selector-url">URL</option>
            <option value="selector-pc">PC</option>
         </select>
         <input v-if="selectorFlag=='selector-url'" type="text" placeholder="Enter URL:" id="settings__input" v-model="urlPath">
         <input v-else-if="selectorFlag=='selector-pc'" type="text" placeholder="Enter path with pictures on your PC:" id="settings__input" v-model="urlPath">
-        <div class="settings__filter">
+        <div class="picture-gallary__settings-filter">
             <input type="text" id="setting__filter-w" placeholder="Width filter"
                    v-on:filterPictures="$emit('filterPicturesWidth',12)">
             <input type="text" id="setting__filter-h" placeholder="Heidth filter"
