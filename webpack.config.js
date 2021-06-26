@@ -48,7 +48,12 @@ module.exports = {
                                 'plugins': ['@babel/plugin-proposal-class-properties']}]
                   }
                 }
-          }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset',
+      }
+          
       ]
   },
   resolve: {
