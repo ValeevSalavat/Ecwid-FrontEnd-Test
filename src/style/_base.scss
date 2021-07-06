@@ -1,0 +1,30 @@
+@font-face {
+    font-family: "Roboto-Bold";
+    src: url("../assets/roboto/RobotoBold.ttf");
+}
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+html {
+  line-height: 1.15; /* 1 */
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle, rgb(55, 55, 121) 2%, rgb(94, 93, 121) 51%, rgba(0, 212, 255, 1) 100%);
+  font-family:"Roboto-Bold";
+  color: #dff2ef;
+  min-width: 320px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 24px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
