@@ -1,108 +1,130 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import styled, { keyframes } from 'styled-components';
-import { fadeIn } from 'react-animations';
+import connect from 'react-redux/es/connect/connect';
+import actions from './redux/actions'
  
-// const Bounce = styled.div`animation: 2s ${keyframes`${fadeIn}`} infinite`;
- 
-export default class PictureContainer extends React.Component {
-    constructor(props) {
+ class PictureContainer extends React.Component {
+     constructor(props) {
         super(props);
         this.state = {
-            data: "https://don16obqbay2c.cloudfront.net/frontend-test-task/gallery-images.json",
             picturesItems: null,
             bufferOnePictureItem:null,
-            bufferPictureItems:null
+            bufferPictureItems: null,
+            loaded: false,
+            error:null
         };
-        
+     }
+    componentDidMount() {
+        if (this.props.data.length > 0) {
+            this.setState({loaded:true})
+            this.renderContainer()
+        }
+        else {
+            this.setState({
+                picturesItems:<div className="gallary__picture-item gallery__no-picture">No data</div>
+            })
+        }
     }
-    
-    componentWillMount() {
-        fetch("https://don16obqbay2c.cloudfront.net/frontend-test-task/gallery-images.json")
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                this.setState({
-                    data: data.galleryImages
-                });
-                 this.renderContainer()
-            })
-            .catch(() => {
-                this.setState({
-                    picturesItems:<div className="container_nodata">Sorry...url was broken</div>
-                })
-            });
+    componentDidUpdate(newProps) {
+        if (newProps.data.length != this.props.data.length) {
+            this.renderContainer();
+            return false;
+        }
     }
     renderContainer = () => {
-        let massive = [];
-        this.state.data.map(item => {
-            massive.push(
-                    <img key={this.state.data.indexOf(item)}
-                    src={item.url}
-                    className="picture_item picture_fixed"
-                    onDoubleClick={this.doubleClick_deletePicture}
-                    onDragStart={this.dragStart}
-                    onDragEnd={this.dragEnd}
-                ></img>
-            )
-        });
-        this.setState({
-            picturesItems: massive
-        })
+         const { data } = this.props;
+            this.setState({
+                picturesItems: data.map(item => {
+                    return <img key={data.indexOf(item)}
+                        src={item.url}
+                        className="gallery__picture-item"
+                        onDoubleClick={this.doubleClick_deletePicture}
+                        onDragStart={this.dragStart}
+                        onDragEnd={this.dragEnd}
+                    ></img>
+                }),
+                loaded: false
+            })
     }
-    componentDidMount() {
-        // console.log(document.querySelector(".container"));
-    }
-    doubleClick_deletePicture=(e)=>{
-        let newState = this.state.picturesItems.filter(item => {
-           return item.props.src != e.target.currentSrc
-        });
-        this.setState({
-            picturesItems:newState
-        })
+    doubleClick_deletePicture = (e) => {
+        this.props.removePicture(e.target.currentSrc)
     }
     dragStart = (e) => {
-        e.target.classList.add('picture_item-selected');
-        document.querySelector(".container").childNodes.forEach(item => {
-            item.classList.remove("picture_fixed");
-            item.classList.add("picture_noFixed");
+        e.target.classList.add('gallery__picture-item-selected');
+        document.querySelector(".gallery").childNodes.forEach(item => {
+            item.classList.add("gallery__noFixed");
         });
         let newState = this.state.picturesItems.filter(item => {
             return item.props.src != e.target.src;
         })
         this.setState({
             bufferPictureItems: newState,
-            bufferOnePictureItem:e.target
+            bufferOnePictureItem: e.target
         })
     }
     dragEnd=(e)=>{
-        e.target.classList.remove('picture_item-selected');
-        document.querySelector(".container").childNodes.forEach(item => {
-            item.classList.remove("picture_noFixed");
-            item.classList.add("picture_fixed");
+        e.target.classList.remove('gallery__picture-item-selected');
+        document.querySelector(".gallery").childNodes.forEach(item => {
+            item.classList.remove("gallery__noFixed");
         });
     }
     dragOver = (e) => {
         e.preventDefault();
-        let currentElement = e.target;
+        if (this.props.data.length > 0 && e.dataTransfer.files.length==0) {
+            let currentElement = e.target;
 
-        const isMoveable = this.state.bufferOnePictureItem !== currentElement &&
-            currentElement.classList.contains(`picture_item`);
-        if (!isMoveable) {
-            return;
+            const isMoveable = this.state.bufferOnePictureItem !== currentElement &&
+                currentElement.classList.contains(`gallery__picture-item`);
+            if (!isMoveable) {
+                return;
+            }
+            const nextElement = (currentElement === this.state.bufferOnePictureItem.nextElementSibling) ?
+                currentElement.nextElementSibling :
+                currentElement;
+            
+            this.props.changePosition(this.state.bufferOnePictureItem.src, nextElement.src);
+            e.target.parentNode.insertBefore(this.state.bufferOnePictureItem,nextElement);
         }
-        const nextElement = (currentElement === this.state.bufferOnePictureItem.nextElementSibling) ?
-            currentElement.nextElementSibling :
-            currentElement;
-        
-        e.target.parentNode.insertBefore(this.state.bufferOnePictureItem,nextElement);
+    }
+    dragEnter = (e) => {e.preventDefault();}
+    dragLeave = (e) => {e.preventDefault();}
+    fileDrop = (e) => {
+        e.preventDefault();
+        const files = e.dataTransfer.files
+        Object.keys(files).forEach(key => {
+            switch (files[key].type) {
+                case "image/png":
+                    this.props.addPicture(URL.createObjectURL(files[key]));
+                break;
+                
+                case "application/json":
+                let reader = new FileReader();
+                    reader.readAsText(files[key]);
+                    reader.onload = () => {
+                        this.props.setData(JSON.parse(reader.result));
+                    }
+                    break;
+                default: alert("Type of file non supported")
+                    break;
+            }
+        })
+            
     }
     render() {
-        return (
-            <div className="container" onDragOver={this.dragOver}>
-                {this.state.picturesItems}
-            </div>
-        );
+         const { loaded,picturesItems } = this.state;
+            return (
+                <div className="gallery"
+                    onDragOver={this.dragOver}
+                    onDragEnter={this.dragEnter}
+                    onDragLeave={this.dragLeave}
+                    onDrop={this.fileDrop}>
+                    {(loaded) ? <div className="gallery__no-picture">Loading...</div> : picturesItems  }
+                </div>
+            );
     }
 }
+
+const mapStateToProps = (state) => {
+    return state;
+};
+
+export default connect(mapStateToProps,actions)(PictureContainer)
